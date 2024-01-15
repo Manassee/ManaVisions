@@ -1,2 +1,2 @@
 # ManaVisions
-all my Visions &amp; ideas start here
+all my Visions &amp; ideas starts here
