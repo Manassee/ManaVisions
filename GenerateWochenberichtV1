@@ -1,0 +1,32 @@
+using System.Runtime.InteropServices;
+using Word = Microsoft.Office.Interop.Word;
+namespace GenerateWochenbericht
+    
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            Word.Application wordApp = new Word.Application();
+
+            Word.Document doc = wordApp.Documents.Add();
+
+
+            Word.Paragraph para = doc.Paragraphs.Add();
+            para.Range.Text = "Das ist mein automatisierter Wochenbericht.";
+
+            string speicherPfad = @"C:\Users\User\Desktop";
+
+            doc.SaveAs2(speicherPfad);
+
+            wordApp.Quit();
+
+            Marshal.ReleaseComObject(doc);
+            Marshal.ReleaseComObject(wordApp);
+
+            Console.WriteLine("Wochenbericht wurde erstellt und gespeichert" + speicherPfad);
+            Console.ReadLine();
+
+        }
+    }
+}
