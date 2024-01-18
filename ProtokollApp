@@ -1,0 +1,249 @@
+namespace ProtokollApp
+{
+    public class Program
+    {
+        
+        // Liste von Abnahmeprotokoll-objekt erzeugt
+        static List<Abnahmeprotokoll> protocol = new List<Abnahmeprotokoll>();
+        public Fortschrittselement Fortschritt = new Fortschrittselement();
+        private static int ausgewaehlteOption;
+
+        static void Main(string[] args)
+        {
+
+
+
+            //Objekte der Klassen erzeugt
+            Abnahmeprotokoll p = new Abnahmeprotokoll("Beispielprotokoll")
+            {
+
+                Name = "Beispielprotokoll",
+                Fortschrittselemente = new List<Fortschrittselement>
+                {
+                new Fortschrittselement { Name =" Protokoll auswählen", CheckBox = false, Gewichtung = 1 },
+                new Fortschrittselement { Name =" Fortschrittselemente", CheckBox = false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Status prüfen", CheckBox=false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Status ändern", CheckBox =false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Checkbox setzen", CheckBox = false, Gewichtung = 1},
+                new Fortschrittselement { Name =" Gewichtung in % erstellen", CheckBox =  false, Gewichtung = 2}
+             }
+
+            };
+
+            Abnahmeprotokoll a = new Abnahmeprotokoll("Testprotokoll 2")
+                {
+                Name = "Testprotokoll 2",
+                Fortschrittselemente = new List<Fortschrittselement>
+                {
+                new Fortschrittselement { Name =" Schritt 01", CheckBox = false, Gewichtung = 1 },
+                new Fortschrittselement { Name =" SChritt 02", CheckBox = false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Status prüfen", CheckBox=false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Schritt 03", CheckBox =false, Gewichtung = 2},
+             }
+                };
+
+
+            Abnahmeprotokoll b = new Abnahmeprotokoll("Bauplan")
+            {
+                Name = "Bauplan",
+                Fortschrittselemente = new List<Fortschrittselement>
+                {
+                new Fortschrittselement { Name =" technische Unterlagen genehmigt und verfügbar", CheckBox = false, Gewichtung = 1 },
+                new Fortschrittselement { Name =" Übergabe erfolgreich durchgeführt und Dokumente verfügbar", CheckBox = false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Status prüfen", CheckBox=false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Checkbox setzen", CheckBox =false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Checkbox prüfen", CheckBox =false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Letztes Checkup", CheckBox =false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Abnahmeprotokoll erstellen", CheckBox =false, Gewichtung = 2},
+                new Fortschrittselement { Name =" Fertigung", CheckBox =false, Gewichtung = 2},
+             }
+            };
+
+            Abnahmeprotokoll c = new Abnahmeprotokoll("Test")
+            {
+
+                Name = "Abnahmeprotokoll",
+                Fortschrittselemente = new List<Fortschrittselement>
+                {
+                new Fortschrittselement { Name =" Protokoll funktioniert", CheckBox = false, Gewichtung = 1 },
+                
+             }
+
+            };
+
+
+
+
+
+            protocol.Add(p);
+            protocol.Add(a);
+            protocol.Add(c);
+            protocol.Add(b);
+            protocol.Add(new Abnahmeprotokoll("") { Name = "Papierprotokoll" });
+            
+
+            StartFortschrittsverwaltung();
+        }
+
+        
+
+        static void StartFortschrittsverwaltung()
+        {
+            while (true)
+            {
+                int anzahl = protocol.Count;
+                Console.WriteLine($"Es stehen {anzahl} Protokolle zur Verfügung.");
+
+                string[] protokollOptions = protocol.Select(p => p.Name).ToArray();
+                int ausgewaehlteOption = ConsoleHelper.select(protokollOptions);
+
+                Abnahmeprotokoll selectedProtocol = protocol[ausgewaehlteOption - 1];
+                Console.WriteLine($"\nDu hast das Protokoll '{selectedProtocol.Name}' ausgewählt.\n");
+
+                foreach (var element in selectedProtocol.Fortschrittselemente)
+                {
+                    Console.WriteLine($"{element.Name}  CheckBox: {Convert.ToInt32(element.CheckBox)}/1");
+                }
+
+                Console.WriteLine($"\nGesamtfortschritt: {selectedProtocol.GesamtFortschritt}%");
+
+                Console.WriteLine("\nGibt es neue Statusveränderungen? (Ja/Nein)");
+                if (Console.ReadLine()?.ToUpper() == "JA")
+                {
+                    newFortschrittsElement(selectedProtocol.Fortschrittselemente);
+
+                    Console.WriteLine("\nWollen Sie ein weiteres Fortschrittselement bearbeiten?\n");
+                    
+                    while (true)
+                    {
+                        string choice = Console.ReadLine()?.ToUpper();
+                        if (choice == "JA")
+                        {
+                            newFortschrittsElement(selectedProtocol.Fortschrittselemente);
+                            break;
+                        }
+                        else if(choice == "NEIN")
+                        {
+                            break;
+                        }
+
+                        
+                    }
+
+                }
+                 else if(Console.ReadLine()?.ToUpper() == "NEIN"){
+                    Console.WriteLine("\nGut! Wollen sie wieder zu den Protokolllisten zurückkehren? (JA / NEIN)");
+
+                    if(Console.ReadLine()?.ToUpper() == "JA") 
+                    { Console.WriteLine("\nSie werden wieder zur Protokolliste geführt.\n\n");
+                        StartFortschrittsverwaltung();
+                            break;
+                            }
+                    else {
+                        Console.WriteLine("\nDas Programm wird hier beendet.");
+                            break;
+                         }
+
+
+                }
+                
+
+                
+               Console.WriteLine($"\nIm Protokoll '{selectedProtocol.Name}' gab es eine Veränderung.");
+                Console.WriteLine("\nFortschrittselemente:");
+
+                foreach (var element in selectedProtocol.Fortschrittselemente)
+                {
+                    Console.WriteLine($"{element.Name} CheckBox: {Convert.ToInt32(element.CheckBox)}/1");
+                    
+                }
+                Console.WriteLine($"\nGesamtfortschritt: {selectedProtocol.GesamtFortschritt}%\n");
+
+                if (selectedProtocol.GesamtFortschritt == 100) {
+                    Console.WriteLine($"\nDer Fortschritt von Protokoll: {selectedProtocol.Name} ist auf 100%.\n{selectedProtocol.Name} kann nun unterschrieben werden. ");
+
+                    signature(selectedProtocol.Fortschrittselemente);
+                    break;
+                }
+        
+                Console.WriteLine("\nMöchten Sie das Programm verlassen? Geben Sie 'q' ein, sonst geben Sie, um fortzufahren eine beliebige Taste.");
+
+                if (Console.ReadLine()?.ToUpper() == "Q")
+                {
+                    break; // Die Schleife wird beendet, wenn 'q' eingegeben wird.
+                }else
+                {
+                    Console.WriteLine("\nSie werden wieder zur Protokolliste geführt.\n\n");
+                    StartFortschrittsverwaltung();
+                }
+            }
+        }
+
+
+        static void newFortschrittsElement(List<Fortschrittselement> fortschrittselemente)
+        {
+            
+            Console.WriteLine("\nWelcher Fortschrittspunkt soll bearbeitet werden? (Geben Sie die Nummer ein)");
+            int userInput;
+
+            while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > fortschrittselemente.Count)
+            {
+                Console.WriteLine("Ungültige Eingabe. Geben Sie erneut ein.");
+            }
+
+            Fortschrittselement selectedElement = fortschrittselemente[userInput - 1];
+           
+            
+
+            Console.WriteLine($"\nBearbeite Fortschrittselement: '{selectedElement.Name}'");
+
+            Console.WriteLine($"\nWurde {selectedElement.Name} bearbeitet? (Ja/Nein)");
+            if (Console.ReadLine()?.ToUpper() == "JA")
+            {   
+                selectedElement.IsCompleted = true;
+                selectedElement.CheckBox = true;
+                
+                    }
+
+            else if(Console.ReadLine()?.ToUpper() == "NEIN")
+            {
+
+                selectedElement.IsCompleted = false;
+                selectedElement.CheckBox = false;
+            }
+
+            
+        }
+            
+        
+        static void signature(List<Fortschrittselement> fortschrittselemente)
+        {
+            
+            int userInput= 0;
+            Abnahmeprotokoll selectedProtocolToSign = protocol[ausgewaehlteOption];
+            Fortschrittselement selectedElement = fortschrittselemente[userInput];
+
+            Console.WriteLine($"\n\nUnterschrift für Protocol '{selectedProtocolToSign.Name} '\n");
+            Console.WriteLine("Sind sie ein Mitarbeiter oder ein Kunde ? (Mitarbeiter M)   (Kunde K)\n");
+            char choice = Convert.ToChar(Console.ReadLine()?.ToUpper());
+            Console.WriteLine();
+            if(choice == 'M')
+            {
+                Console.Write("Bitte Geben sie ihre Mitarbeiter ID ein: ");
+                int WorkerID = Convert.ToInt32(Console.ReadLine());
+                Console.Write("\nUnterschreiben Sie mit ihrem Nachnamen: ");
+                string workerName = Console.ReadLine();
+                Console.WriteLine($"\n\nDas Protokoll '{selectedProtocolToSign.Name}' wurde erfolgreich von {workerName} ID:{WorkerID} unterschrieben. ");
+                Console.Write($"CheckBox: { Convert.ToInt32(selectedElement.CheckBox)}/ 1");
+                Console.WriteLine();
+
+            }
+            else if(choice ==  'K') {
+                Console.Write("\nUnterschreiben Sie mit ihrem Nachnamen: ");
+                string workerName = Console.ReadLine();
+                Console.WriteLine($"\n\nDas Protokoll {selectedProtocolToSign.Name} wurde erfolgreich von {workerName}");
+
+            }
+
+
+        }
